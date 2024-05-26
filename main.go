@@ -8,7 +8,7 @@ import (
 )
 
 // Define the list of profane words
-var profaneWords = []string{"kerfuffle", "sharbert", "fornax"}
+var profaneWords = []string{"fuck", "shit", "chutiya"}
 
 // Function to replace profane words
 func replaceProfaneWords(text string) string {
