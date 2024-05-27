@@ -4,7 +4,11 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
+
+	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
 )
 
 // Define the list of profane words
@@ -79,7 +83,6 @@ func getChirpsHandler(db *DB) http.HandlerFunc {
 			respondWithError(w, http.StatusMethodNotAllowed, "Method not allowed")
 			return
 		}
-
 		chirps, err := db.GetChirps()
 		if err != nil {
 			respondWithError(w, http.StatusInternalServerError, "Failed to get chirps")
@@ -87,6 +90,34 @@ func getChirpsHandler(db *DB) http.HandlerFunc {
 		}
 
 		respondWithJSON(w, http.StatusOK, chirps)
+	}
+}
+func getChirpByIDHandler(db *DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet {
+			respondWithError(w, http.StatusMethodNotAllowed, "Method not allowed")
+			return
+		}
+
+		// Extract the path parameters
+		idStr := chi.URLParam(r, "id")
+
+		// Convert the ID to an integer
+		id, err := strconv.Atoi(idStr)
+		if err != nil {
+			respondWithError(w, http.StatusBadRequest, "Invalid chirp ID")
+			return
+		}
+
+		// Get the chirp by ID
+		chirp, exists := db.GetChirpByID(id)
+		if !exists {
+			respondWithError(w, http.StatusNotFound, "Chirp not found")
+			return
+		}
+
+		// Respond with the chirp
+		respondWithJSON(w, http.StatusOK, chirp)
 	}
 }
 func readinessHandler(w http.ResponseWriter, r *http.Request){
@@ -100,14 +131,19 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to initialize database: %s", err)
 	}
+	r := chi.NewRouter()
 
-	mux := http.NewServeMux()
-	mux.HandleFunc("POST /api/chirps", createChirpHandler(db))
-	mux.HandleFunc("GET /api/chirps", getChirpsHandler(db))
-	mux.HandleFunc("/api/healthz", readinessHandler)
+	// Use some middlewares
+	r.Use(middleware.Logger)
+	r.Use(middleware.Recoverer)
+
+	// Define the routes
+	r.Post("/api/chirps", createChirpHandler(db))
+	r.Get("/api/chirps", getChirpsHandler(db))
+	r.Get("/api/chirps/{id}", getChirpByIDHandler(db))
 
 	log.Println("Starting server on :8080")
-	if err := http.ListenAndServe(":8080", mux); err != nil {
+	if err := http.ListenAndServe(":8080", r); err != nil {
 		log.Fatalf("could not start server: %s\n", err)
 	}
 }

@@ -1,3 +1,8 @@
 {
-  "chirps": {}
+  "chirps": {
+    "1": {
+      "id": 1,
+      "body": "Hi, this is my first chirp, i just had porridge. Excuse me for using the word **** its for testing"
+    }
+  }
 }
