@@ -2,11 +2,13 @@
   "users": {
     "1": {
       "id": 1,
-      "email": "heroxyz@gmail.com"
+      "HashedPassword": "$2a$10$q.fk2gUwk8fRpJfM.7mwO.NXtrUKYomPu836xkehLLZca3HZxS8.W",
+      "email": "pqrgamer@gmail.com"
     },
     "2": {
       "id": 2,
-      "email": "pqrgamer@gmail.com"
+      "HashedPassword": "$2a$10$Ttj1k4rDTxau1YHX5tBsau5fLfOuY3z5YyB1kZVcv6BR9H0vHUcLa",
+      "email": "xyzgamer@gmail.com"
     }
   },
   "chirps": {}

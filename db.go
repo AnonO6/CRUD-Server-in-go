@@ -32,7 +32,10 @@ func (db *DB) ensureDB() error {
 	if err != nil {
 		if os.IsNotExist(err) {
 			println("Database doesn't exist, creating empty database")
-			initialData := DBStructure{Chirps: make(map[int]Chirp)}
+			initialData := DBStructure{
+				Users: make(map[int]User),
+				Chirps: make(map[int]Chirp),
+			}
 			return db.writeDB(initialData)
 		}
 		return err
@@ -49,7 +52,10 @@ func (db *DB) ensureDB() error {
 	// Check if the file contains an empty JSON object "{}"
 	if string(data) == "{}" {
 		println("File contains an empty JSON object, initializing with empty chirps map")
-		initialData := DBStructure{Chirps: make(map[int]Chirp)}
+		initialData := DBStructure{
+			Users: make(map[int]User),
+			Chirps: make(map[int]Chirp),
+		}
 		return db.writeDB(initialData)
 	}
 	return nil
