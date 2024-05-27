@@ -4,12 +4,9 @@ import "sort"
 type Chirp struct {
 	ID int `json:"id"`
 	Body string `json:"body"`
+	UID int `json:"uid"`
 }
-type DBStructure struct {
-	User	User
-	Chirps map[int]Chirp `json:"chirps"`
-}
-func (db *DB) CreateChirp(body string) (Chirp, error) {
+func (db *DB) CreateChirp(body string,uid int) (Chirp, error) {
 	db.mux.Lock()
 	defer db.mux.Unlock()
 
@@ -22,8 +19,8 @@ func (db *DB) CreateChirp(body string) (Chirp, error) {
 	chirp := Chirp{
 		ID:   newID,
 		Body: body,
+		UID: uid,
 	}
-
 	dbStructure.Chirps[newID] = chirp
 	err = db.writeDB(dbStructure)
 	if err != nil {
@@ -32,7 +29,6 @@ func (db *DB) CreateChirp(body string) (Chirp, error) {
 
 	return chirp, nil
 }
-
 func (db *DB) GetChirps() ([]Chirp, error) {
 	db.mux.RLock()
 	defer db.mux.RUnlock()

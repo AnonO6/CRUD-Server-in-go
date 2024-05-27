@@ -11,7 +11,10 @@ type DB struct {
 	path string
 	mux  *sync.RWMutex
 }
-
+type DBStructure struct {
+	Users	map[int]User	`json:"users"`
+	Chirps map[int]Chirp `json:"chirps"`
+}
 func NewDB(path string) (*DB, error) {
 	db := &DB{
 		path: path,
@@ -37,7 +40,10 @@ func (db *DB) ensureDB() error {
 	// Check if the file content is empty or only contains whitespace
 	if len(strings.TrimSpace(string(data))) == 0 {
 		println("File is empty, initializing with empty chirps map");
-		initialData := DBStructure{Chirps: make(map[int]Chirp)}
+		initialData := DBStructure{
+			Users: make(map[int]User),
+			Chirps: make(map[int]Chirp),
+		}
 		return db.writeDB(initialData)
 	}
 	// Check if the file contains an empty JSON object "{}"

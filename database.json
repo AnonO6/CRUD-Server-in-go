@@ -1,8 +1,13 @@
 {
-  "chirps": {
+  "users": {
     "1": {
       "id": 1,
-      "body": "Hi, this is my first chirp, i just had porridge. Excuse me for using the word **** its for testing"
+      "email": "heroxyz@gmail.com"
+    },
+    "2": {
+      "id": 2,
+      "email": "pqrgamer@gmail.com"
     }
-  }
+  },
+  "chirps": {}
 }
