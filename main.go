@@ -1,15 +1,24 @@
 package main
 
 import (
+	"crypto/rsa"
 	"encoding/json"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"github.com/joho/godotenv"
 )
 
+type ApiConfig struct{
+	db	*DB
+	jwtSecret	string
+	rsaPrivate	*rsa.PrivateKey
+	rsaPublic 	*rsa.PublicKey
+}
 // Define the list of profane words
 var profaneWords = []string{"fuck", "shit", "chutiya"}
 
@@ -50,10 +59,32 @@ func readinessHandler(w http.ResponseWriter, r *http.Request){
 }
 
 func main() {
+	// We dont need jwt secret right now since we are using RSA
+	err := godotenv.Load();
+	if err != nil{
+		log.Fatalf("Failed to load environment variable: %s",err)
+	}
+	jwtSecret := os.Getenv("JWT_SECRET")
+	if jwtSecret == "" {
+		log.Fatalf("JWT_SECRET is not set")
+	}
 	db, err := NewDB("database.json")
 	if err != nil {
 		log.Fatalf("Failed to initialize database: %s", err)
+		return
 	}
+	privateKey, publicKey, err := loadRSAKeys()
+	if err != nil {
+		log.Fatalf("Failed to load RSA keys: %v", err)
+	}
+	
+	apiConfig := &ApiConfig{
+		db: db,
+		jwtSecret: jwtSecret,
+		rsaPrivate: privateKey,
+		rsaPublic: publicKey,
+	}
+
 	r := chi.NewRouter()
 
 	// Some middlewares
@@ -68,10 +99,12 @@ func main() {
 	r.Get("/api/chirps/{id}", getChirpByIDHandler(db))
 	// For Users
 	r.Post("/api/users", createUserHandler(db))
-	r.Post("/api/login", loginHandler(db))
+	r.Put("/api/users", updateUserHandler(apiConfig))
+	r.Post("/api/login", loginHandler(apiConfig))
 
 	log.Println("Starting server on :8080")
 	if err := http.ListenAndServe(":8080", r); err != nil {
 		log.Fatalf("could not start server: %s\n", err)
+		return
 	}
 }

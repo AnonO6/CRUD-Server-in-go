@@ -2,13 +2,18 @@
   "users": {
     "1": {
       "id": 1,
-      "HashedPassword": "$2a$10$q.fk2gUwk8fRpJfM.7mwO.NXtrUKYomPu836xkehLLZca3HZxS8.W",
-      "email": "pqrgamer@gmail.com"
+      "HashedPassword": "$2a$10$30LBXyheSlPxRDWWUsxenez8lhO4CqawxSNnN0HPu2ZSl7u1zJr8a",
+      "email": "xyzgamer@gmail.com"
     },
     "2": {
       "id": 2,
-      "HashedPassword": "$2a$10$Ttj1k4rDTxau1YHX5tBsau5fLfOuY3z5YyB1kZVcv6BR9H0vHUcLa",
-      "email": "xyzgamer@gmail.com"
+      "HashedPassword": "$2a$10$AscMHOkct6gD4G7bViRsIu5hgFB/FGbSrlxhY/mwiyH66m7tx1KJy",
+      "email": "pqrgamer@gmail.com"
+    },
+    "3": {
+      "id": 3,
+      "HashedPassword": "$2a$10$JfWKrTWgB/ee2BiGi7.J3uExDJ9zBXGaA0VsxuFRqZeuI/O0zln1W",
+      "email": "newgamerz@gmail.com"
     }
   },
   "chirps": {}
